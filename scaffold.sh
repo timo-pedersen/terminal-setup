@@ -167,8 +167,8 @@ write_if_missing setup/install-ucrt64.sh <<'EOF'
 
 set -euo pipefail
 
-printf '%s\n' 
-'TODO: install packages from packages/msys.txt and packages/ucrt64.txt.' 
+printf '%s\n' \
+'TODO: install packages from packages/msys.txt and packages/ucrt64.txt.' \
 'MSYS2 must be fully updated manually before running this script.'
 EOF
 
@@ -177,8 +177,8 @@ write_if_missing setup/deploy-config.sh <<'EOF'
 
 set -euo pipefail
 
-printf '%s\n' 
-'TODO: deploy configuration files.' 
+printf '%s\n' \
+'TODO: deploy configuration files.' \
 'Existing destination files must be backed up before replacement.'
 EOF
 
@@ -187,7 +187,7 @@ write_if_missing setup/verify.sh <<'EOF'
 
 set -euo pipefail
 
-printf '%s\n' 
+printf '%s\n' \
 'TODO: verify UCRT64, Windows Git, Windows .NET and installed tools.'
 EOF
 

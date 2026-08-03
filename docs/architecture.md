@@ -9,7 +9,7 @@ Windows 11
 └── WezTerm
     └── MSYS2 UCRT64
         └── Bash
-````
+```
 
 ## Ownership boundaries
 

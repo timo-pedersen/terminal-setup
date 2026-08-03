@@ -2,6 +2,6 @@
 
 set -euo pipefail
 
-printf '%s\n' 
-'TODO: deploy configuration files.' 
+printf '%s\n' \
+'TODO: deploy configuration files.' \
 'Existing destination files must be backed up before replacement.'

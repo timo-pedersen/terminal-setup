@@ -1,0 +1,9 @@
+
+# Native UCRT64 packages.
+
+mingw-w64-ucrt-x86_64-fd
+mingw-w64-ucrt-x86_64-fzf
+mingw-w64-ucrt-x86_64-neovim
+mingw-w64-ucrt-x86_64-nodejs
+mingw-w64-ucrt-x86_64-ripgrep
+mingw-w64-ucrt-x86_64-starship

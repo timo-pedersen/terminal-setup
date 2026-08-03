@@ -1,0 +1,8 @@
+
+# Packages provided by the MSYS repository.
+
+base-devel
+openssh
+tmux
+unzip
+zip

@@ -1,0 +1,15 @@
+* text=auto
+
+# Shell and configuration files must remain LF, even on Windows clones.
+*.sh text eol=lf
+*.bash text eol=lf
+.bashrc text eol=lf
+.bash_profile text eol=lf
+*.lua text eol=lf
+*.toml text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+
+# Native Windows command scripts use CRLF.
+*.bat text eol=crlf
+*.cmd text eol=crlf

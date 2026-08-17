@@ -30,3 +30,11 @@ min_time = 1
 show_milliseconds = true
 format = '[took $duration](bold yellow)'
 
+[directory]
+use_os_path_sep = false
+substitutions = [
+  { from = "C:/", to = "/c/" },
+  { from = "D:/", to = "/d/" },
+  { from = "E:/", to = "/e/" },
+]
+

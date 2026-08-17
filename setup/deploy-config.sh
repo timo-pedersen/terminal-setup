@@ -39,6 +39,14 @@ deploy_file() {
 }
 
 deploy_file \
+    "$repo_root/bash/.bashrc" \
+    "$HOME/.bashrc"
+
+deploy_file \
+    "$repo_root/bash/.bash_profile" \
+    "$HOME/.bash_profile"
+
+deploy_file \
     "$repo_root/starship/starship.toml" \
     "$HOME/.config/starship.toml"
 

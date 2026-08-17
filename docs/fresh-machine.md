@@ -81,4 +81,6 @@ export STARSHIP_CONFIG="$HOME/.config/starship.toml"
 ```
 This is already added to `~/.bashrc`.
 
+## Rg
 
+Rg is using Windows side config in `$USERPROFILE/.config`.

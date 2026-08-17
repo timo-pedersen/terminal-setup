@@ -13,7 +13,7 @@ Windows 11
 
 ## Ownership boundaries
 
-Windows owns:
+### Windows owns:
 
 * WezTerm
 * Git
@@ -21,7 +21,7 @@ Windows owns:
 * Windows fonts
 * GUI applications
 
-MSYS2 UCRT64 owns:
+### MSYS2 UCRT64 owns:
 
 * Bash
 * Unix command-line tools

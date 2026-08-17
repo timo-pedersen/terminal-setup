@@ -42,4 +42,8 @@ deploy_file \
     "$repo_root/starship/starship.toml" \
     "$HOME/.config/starship.toml"
 
+deploy_file \
+    "$repo_root/ripgrep/.ripgreprc" \
+    "$USERPROFILE/.config/.ripgreprc"
+
 printf '\nConfiguration deployment complete.\n'

@@ -39,6 +39,10 @@ deploy_file() {
 }
 
 deploy_file \
+    "$repo_root/wezterm/.wezterm.lua" \
+    "$USERPROFILE/.wezterm.lua"
+
+deploy_file \
     "$repo_root/bash/.bashrc" \
     "$HOME/.bashrc"
 

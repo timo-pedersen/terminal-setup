@@ -23,3 +23,4 @@ In short:
 4. Run `setup/deploy-config.sh`.
 5. Open a new UCRT64 terminal.
 6. Run `setup/verify.sh`.
+7. Optional: Register Neovim context-menu in `windows/integration`.

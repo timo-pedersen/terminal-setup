@@ -1,0 +1,8 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CURRENT_USER\Software\Classes\*\shell\OpenWithNeovim]
+@="Open with Neovim"
+"Icon"="C:\\msys64\\ucrt64\\bin\\nvim.exe"
+
+[HKEY_CURRENT_USER\Software\Classes\*\shell\OpenWithNeovim\command]
+@="cmd /d /c \"\"C:\\msys64\\usr\\local\\bin\\open-with-neovim.cmd\" \"%1\"\""

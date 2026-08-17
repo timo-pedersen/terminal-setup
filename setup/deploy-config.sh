@@ -58,4 +58,10 @@ deploy_file \
     "$repo_root/ripgrep/.ripgreprc" \
     "$USERPROFILE/.config/.ripgreprc"
 
+# Deploy wrapper local to MSYS2, hard coded path (reachable from Windows at C:\msys64\usr\local\bin\open-with-neovim.cmd). 
+# Reason is %USERPROFILE% does not expand correctly in registry.
+deploy_file \
+    "$repo_root/windows/integration/open-with-neovim.cmd" \
+    "/usr/local/bin/open-with-neovim.cmd"
+
 printf '\nConfiguration deployment complete.\n'

@@ -2,6 +2,44 @@
 
 set -euo pipefail
 
-printf '%s\n' \
-'TODO: deploy configuration files.' \
-'Existing destination files must be backed up before replacement.'
+if [[ "${MSYSTEM:-}" != "UCRT64" ]]; then
+    printf 'ERROR: Run this script from MSYS2 UCRT64.\n' >&2
+    exit 1
+fi
+
+script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+repo_root="$(cd -- "$script_dir/.." && pwd)"
+
+deploy_file() {
+    local source="$1"
+    local destination="$2"
+
+    if [[ ! -f "$source" ]]; then
+        printf 'ERROR: Source file not found: %s\n' "$source" >&2
+        exit 1
+    fi
+
+    mkdir -p "$(dirname -- "$destination")"
+
+    if [[ -f "$destination" ]] && cmp -s "$source" "$destination"; then
+        printf '[OK]   Already current: %s\n' "$destination"
+        return
+    fi
+
+    if [[ -f "$destination" ]]; then
+        local backup
+        backup="${destination}.bak.$(date '+%Y%m%d-%H%M%S')"
+
+        cp -- "$destination" "$backup"
+        printf '[BACKUP] %s\n' "$backup"
+    fi
+
+    cp -- "$source" "$destination"
+    printf '[DEPLOY] %s -> %s\n' "$source" "$destination"
+}
+
+deploy_file \
+    "$repo_root/starship/starship.toml" \
+    "$HOME/.config/starship.toml"
+
+printf '\nConfiguration deployment complete.\n'

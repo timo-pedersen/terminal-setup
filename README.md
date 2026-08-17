@@ -13,9 +13,13 @@ Reproducible terminal environment for Windows 11.
 
 ## Setup
 
-1. Manually install Git for Windows, WezTerm and MSYS2.
+See [docs/fresh-machine.md](docs/fresh-machine.md).
+
+In short:
+
+1. Manually install Windows prerequisites.
 2. Fully update MSYS2.
 3. Run `setup/install-ucrt64.sh`.
 4. Run `setup/deploy-config.sh`.
-5. Run `setup/verify.sh`.
-
+5. Open a new UCRT64 terminal.
+6. Run `setup/verify.sh`.

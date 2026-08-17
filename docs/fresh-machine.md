@@ -1,86 +1,190 @@
-
 # Fresh-machine setup
 
-## Manual Windows installation
+## 1. Install Windows prerequisites
 
-Install manually under Windows:
+Install manually:
 
-* Git for Windows, and jot down the path (CMD: where git)
-* WezTerm
-* MSYS2
-* Neovim, if a separate Windows installation is wanted (why?)
-* DotNet, and jot down the path (CMD: where dotnet).
+- Git for Windows
+- WezTerm
+- MSYS2
+- Windows .NET SDK
 
-## Update MSYS2
+Useful checks from ordinary Windows CMD:
 
-From an MSYS2 terminal:
+```cmd
+where git
+where dotnet
+```
 
-```bash
+Expected locations are normally similar to:
+
+´C:\Program Files\Git\cmd\git.exe´
+´C:\Program Files\dotnet\dotnet.exe´
+
+## 2. Update MSYS2
+
+Open an MSYS2 UCRT64 shell and run:
+
+```
 pacman -Suy
 ```
 
-If MSYS2 requests that all terminals be closed, close them, reopen UCRT64 and run:
+If MSYS2 asks for all terminals to be closed, close them, reopen UCRT64 and
+run pacman -Suy again.
 
-```bash
-pacman -Suy
-```
+Repeat until fully updated.
 
-Repeat until the system is fully updated. Standard stuff.
+3. Install UCRT64 packages
 
-## Continue setup
-
-From the repository root in UCRT64:
+Clone this repository and, from its root:
 
 ```bash
 ./setup/install-ucrt64.sh
-./setup/verify.sh
+```
+
+The script expects:
+
+```bash
+MSYSTEM=UCRT64`
+MINGW_PREFIX=/ucrt64
+```
+
+MSYS2 system upgrades remain manual; the installer does not run pacman -Suy.
+
+## 4. Deploy configuration
+
+Run:
+```bash
 ./setup/deploy-config.sh
 ```
 
-## Windows tools from UCRT64
+The repository is the source of truth for managed configuration files.
+Existing destination files are backed up before replacement.
 
-UCRT64 keeps its own Unix home (`HOME=/home/<user>`), while Windows-native
-tools use `%USERPROFILE%`. Keep these homes separate.
+Open a new WezTerm/UCRT64 terminal after deployment so the deployed Bash
+configuration is loaded normally.
 
-Git for Windows is authoritative. Point it explicitly at the Windows global
-config from `~/.bashrc`:
+5. Verify
+
+Run:
 
 ```bash
+./setup/verify.sh
+```
+
+A healthy environment should show:
+
+```
+MSYSTEM=UCRT64
+MINGW_PREFIX=/ucrt64
+git -> Git for Windows
+dotnet -> C:\Program Files\dotnet
+```
+
+and all packages listed in packages/msys.txt and packages/ucrt64.txt
+should be installed.
+
+## Troubleshooting
+
+### Git resolves incorrectly
+
+Check:
+
+```bash
+type -a git
+```
+
+The primary Git should be Git for Windows;
+NOT `/usr/bin/git`, `/mingw64/bin/git` or `/ucrt64/bin/git`.
+
+The Bash configuration exposes Git for Windows with:
+
+```bash
+export PATH="/c/Program Files/Git/cmd:$PATH"
 export GIT_CONFIG_GLOBAL="$(cygpath -m "$USERPROFILE")/.gitconfig"
 ```
 
-The Windows .NET SDK is also authoritative. If dotnet is not visible from
-UCRT64, add:
+### .NET is missing
+
+If Windows CMD finds dotnet but UCRT64 does not, the Windows SDK directory
+must be added to the Bash PATH:
 
 ```bash
 export PATH="/c/Program Files/dotnet:$PATH"
 ```
 
-Verify the shell before setup:
+Then:
 
 ```bash
-echo "$MSYSTEM"       # UCRT64
-echo "$MINGW_PREFIX"  # /ucrt64
-type -a git           # should resolve to Git for Windows
-dotnet --version      # should resolve to C:\Program Files\dotnet
+dotnet --version
+dotnet --list-sdks
 ```
 
-Git identity uses the work identity by default on work machine. 
-Personal repositories below C:\git_misc\ use a conditional include with .gitconfig-personal.
-user.useConfigOnly=true prevents Git from silently inventing an identity.
+### Git identity
 
-## Starship
+Git authentication and commit identity are separate.
 
-Starship is owned by MSYS2 and config lives in `~/.config/starship.toml`.
+The Windows global Git configuration supplies the default identity.
+On machines that need separate personal and work identities, use conditional
+Git includes for the appropriate repository roots.
 
-In order to point Starship to correct config instead of the Windows-owned one in
-`$USERPROFILE/.config`, do:
+Set:
+
+``` 
+git config --global user.useConfigOnly true
+```
+
+to prevent Git from silently inventing an identity.
+
+## Starship configuration
+
+UCRT64 Starship uses:
+
+```
+~/.config/starship.toml
+```
+
+Bash explicitly selects it:
 
 ```bash
 export STARSHIP_CONFIG="$HOME/.config/starship.toml"
 ```
-This is already added to `~/.bashrc`.
 
-## Rg
+This prevents accidental use of a similarly named Windows-side config.
 
-Rg is using Windows side config in `$USERPROFILE/.config`.
+## ripgrep configuration
+
+ripgrep is used from both Windows and UCRT64.
+
+Both use the shared Windows-side configuration:
+
+```
+%USERPROFILE%\.config\.ripgreprc
+```
+
+UCRT64 points to it with `RIPGREP_CONFIG_PATH`.
+
+## MSYS2 command-line arguments
+
+MSYS2 performs argument/path conversion when launching Windows programs.
+For example, `cmd.exe /c ...` can be surprising from Bash.
+
+Where possible, invoke Windows executables directly, for example:
+
+```
+where.exe dotnet
+```
+
+rather than going through cmd.exe.
+
+## fzf
+
+fzf shell integration is enabled in Bash.
+
+Useful bindings:
+
+Ctrl-R   fuzzy command history
+Ctrl-T   fuzzy file selection
+Alt-C    fuzzy directory change
+
+

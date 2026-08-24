@@ -43,6 +43,10 @@ deploy_file \
     "$HOME/.minttyrc"
 
 deploy_file \
+    "$repo_root/mintty/terminal_texture2.jpg" \
+    "/c/msys64/home/terminal_texture2.jpg"
+
+deploy_file \
     "$repo_root/wezterm/.wezterm.lua" \
     "$USERPROFILE/.wezterm.lua"
 

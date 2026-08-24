@@ -206,4 +206,125 @@ Ctrl-R   fuzzy command history
 Ctrl-T   fuzzy file selection
 Alt-C    fuzzy directory change
 
+## Terminal: MSYS2 UCRT64 + mintty
 
+### Why mintty and not WezTerm
+
+Paste latency in MSYS2 bash scales linearly with the number of live MSYS
+processes, but **only on console-attached shells** (`cons*` in `ps -ef`).
+Shells on an MSYS pty (`pty*` — i.e. mintty) are unaffected.
+
+Measured, identical 500-character paste, same machine:
+
+| MSYS processes | WezTerm (`cons`) | mintty (`pty`) |
+|---|---|---|
+| 1  | 0.3 s  | — |
+| 2  | 2–3 s  | — |
+| 3  | 6–7 s  | — |
+| 4  | 9 s    | — |
+| 6  | 16 s   | — |
+| 16 | 35 s   | < 0.5 s |
+
+Not fixable from either end — not `inputrc`, not `send_paste`, not
+`MSYS=disable_pcon`, not the MSYSTEM subsystem, not the runtime version.
+Git Bash appears fast only because it is a *separate installation* with its
+own process table (two entries), not because it is architecturally different.
+
+Practical consequence: use mintty. Ten shells stay fast. Any ConPTY-based
+terminal degrades over a working day as tabs accumulate.
+
+### Launcher
+
+`C:\msys64\ucrt64.ini`:
+
+```ini
+CHERE_INVOKING=1
+```
+
+(Already a line present, just remove the '#')
+
+**This is load-bearing.** Without it, `/etc/profile` runs `cd "$HOME"` at
+startup and silently overrides any directory set beforehand — the shortcut's
+"Start in", mintty's `--dir`, everything. Symptom is always landing in `~`
+regardless of configuration.
+
+Verify with `echo "[$CHERE_INVOKING]"` — must print `[1]`.
+
+Start directory then comes from the shortcut's **Start in** field
+(e.g. `C:\git`), or `--dir /c/git` on a direct mintty invocation.
+Note: there is no working `Dir=` config-file setting; `--dir` is
+command-line only.
+
+### `~/.minttyrc`
+
+```ini
+# tabs (virtual tabs = separate windows, geometry-synced)
+TabBar=1
+SessionGeomSync=2
+
+# mouse: double-click word, triple-click line, right-click paste
+CopyOnSelect=yes
+RightClickAction=paste
+ClicksTargetApp=no
+AllowSetSelection=yes
+
+# keys (this unlocks eg shift-ctrl-v for paste automatically)
+CtrlShiftShortcuts=yes
+KeyFunctions=t:new-tab-cwd;n:new-window-cwd;
+
+# looks
+Background=C:\msys64\home\terminal_texture2.jpg
+ThemeDark=xterm
+Font=0xProto Nerd Font Mono
+TabFont=0xProto Nerd Font Mono, 9px
+FontHeight=10
+FontSmoothing=full
+Transparency=low
+OpaqueWhenFocused=yes
+CursorType=line
+Columns=166
+Rows=33
+
+# misc
+Charset=UTF-8
+Locale=en_US
+Language=en_US
+PgUpDnScroll=no
+BellType=0
+StatusLine=no
+```
+
+`CtrlShiftShortcuts=yes` does two jobs: it enables the built-in
+Ctrl+Shift+C/V/N set, *and* it is required for bare-letter `KeyFunctions`
+bindings (a letter with no modifier is implicitly Ctrl+Shift).
+
+### Tab titles
+
+In `~/.bashrc` — gives `U ../terminal-setup`, updating on every `cd`:
+
+```bash
+tabtitle() {
+  local t="${MSYSTEM:0:1}"     # U for UCRT64, M for MINGW64
+  local d="${PWD##*/}"
+  printf '\e]0;%s ../%s\a' "$t" "$d"
+}
+PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND; }tabtitle"
+```
+
+nvim leaves the title alone (`set title` is off by default), so tab names
+survive editing sessions.
+
+### Gotchas
+
+- Tabs are not real tabs — they are separate top-level windows, hidden and
+  shown on switch. Hence the flicker, and hence every new session being
+  pulled into one group.
+- `Shift+Shift+Alt+F2` (both Shift keys) forces a window outside the tabbar.
+  `new-window-cwd` bound to a key is nicer. For permanently separate groups,
+  give a second shortcut `-o Class=<name>`.
+- Mintty's `A+` modifier means **left Alt only** — right Alt can't be
+  distinguished from AltGr on a Nordic layout.
+- `Alt+F3` is scrollback search. Useful; don't rebind it.
+- Wrong function names in `KeyFunctions` fail silently. Find real ones with
+  `grep -ao 'Tab[A-Za-z]*' /usr/bin/mintty.exe | sort -u` (works for any
+  option prefix).

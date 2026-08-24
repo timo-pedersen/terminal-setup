@@ -25,8 +25,13 @@ alias la='ls -aF --color=auto'
 
 alias less='less -r'
 
-eval "$(starship init bash)"
-
+# Gives tabtitle in mintty
+tabtitle() {
+  local t="${MSYSTEM:0:1}"                    # U for UCRT64, M for MINGW64
+  local d="${PWD##*/}"                        # last path component
+  printf '\e]0;%s ../%s\a' "$t" "$d"
+}
+PROMPT_COMMAND="tabtitle${PROMPT_COMMAND:+; $PROMPT_COMMAND}"
 
 # fzf key bindings and completion.
 eval "$(fzf --bash)"

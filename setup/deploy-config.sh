@@ -39,6 +39,10 @@ deploy_file() {
 }
 
 deploy_file \
+    "$repo_root/mintty/.minttyrc" \
+    "$HOME/.minttyrc"
+
+deploy_file \
     "$repo_root/wezterm/.wezterm.lua" \
     "$USERPROFILE/.wezterm.lua"
 
@@ -49,6 +53,10 @@ deploy_file \
 deploy_file \
     "$repo_root/bash/.bash_profile" \
     "$HOME/.bash_profile"
+
+deploy_file \
+    "$repo_root/tmux/.tmux.conf" \
+    "$HOME/.tmux.conf"
 
 deploy_file \
     "$repo_root/starship/starship.toml" \

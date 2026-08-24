@@ -1,0 +1,28 @@
+AllowSetSelection=yes
+CopyOnSelect=yes
+RightClickAction=paste
+ClicksTargetApp=no
+TabBar=1
+SessionGeomSync=2
+ZoomMouse=yes
+
+CtrlShiftShortcuts=yes
+KeyFunctions=d:`echo -n `date``;C+F2:new-tab-cwd;AC+F2:new-window;
+
+ThemeDark=xterm
+Transparency=low
+OpaqueWhenFocused=yes
+CursorType=line
+FontHeight=10
+Font=0xProto Nerd Font Mono
+FontSmoothing=full
+Locale=sv_EN
+Charset=UTF-8
+Columns=166
+Rows=33
+PgUpDnScroll=no
+Language=en_US
+BellType=0
+StatusLine=no
+
+TabFont=0xProto Nerd Font Mono, 10px

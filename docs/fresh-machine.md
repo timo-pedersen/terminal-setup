@@ -120,6 +120,9 @@ dotnet --version
 dotnet --list-sdks
 ```
 
+
+## Git
+
 ### Git identity
 
 Git authentication and commit identity are separate.
@@ -135,6 +138,19 @@ git config --global user.useConfigOnly true
 ```
 
 to prevent Git from silently inventing an identity.
+
+### Git pager
+
+Git for Windows normally uses its bundled `less`. Inside MSYS2/tmux this
+pager does not know the `tmux-256color` terminfo entry.
+
+Use the MSYS2 pager instead:
+
+```bash
+git config --global core.pager 'C:/msys64/usr/bin/less.exe -R -+X'
+```
+
+N.B: This also magically works in CMD.
 
 ## Starship configuration
 
@@ -152,6 +168,7 @@ export STARSHIP_CONFIG="$HOME/.config/starship.toml"
 
 This prevents accidental use of a similarly named Windows-side config.
 
+
 ## ripgrep configuration
 
 ripgrep is used from both Windows and UCRT64.
@@ -163,6 +180,7 @@ Both use the shared Windows-side configuration:
 ```
 
 UCRT64 points to it with `RIPGREP_CONFIG_PATH`.
+
 
 ## MSYS2 command-line arguments
 
@@ -176,6 +194,7 @@ where.exe dotnet
 ```
 
 rather than going through cmd.exe.
+
 
 ## fzf
 

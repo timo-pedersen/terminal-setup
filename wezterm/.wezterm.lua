@@ -9,6 +9,12 @@ local ucrt64 = {
   'C:\\msys64\\msys2_shell.cmd -here -defterm -no-start -ucrt64',
 }
 
+local mingw64 = {
+  'cmd.exe',
+  '/c',
+  'C:\\msys64\\msys2_shell.cmd -here -defterm -no-start -mingw64',
+}
+
 -- Cursor
 config.default_cursor_style = 'BlinkingBar'
 config.cursor_blink_ease_in = 'Ease'
@@ -24,7 +30,12 @@ config.window_decorations = 'INTEGRATED_BUTTONS|RESIZE'
 
 -- Behavior
 config.window_close_confirmation = 'NeverPrompt'
-config.default_prog = ucrt64
+-- config.default_prog = ucrt64
+config.default_prog = mingw64
+-- config.default_prog = {
+--   'C:\\msys64\\usr\\bin\\env.exe', 'MSYS=disable_pcon', 'MSYSTEM=MINGW64',
+--   'CHERE_INVOKING=1', 'C:\\msys64\\usr\\bin\\bash.exe', '--login', '-1'
+-- }
 config.default_cwd = 'C:/git'
 
 -- Tab bar
@@ -59,12 +70,23 @@ end)
 
 wezterm.on('format-tab-title', function(tab, tabs, panes, config, hover, max_width)
   local zoomed = ''
-
   if tab.active_pane.is_zoomed then
     zoomed = '[Z] '
   end
 
-  return zoomed .. tab.active_pane.title
+  local title = tab.active_pane.title
+  local cwd = tab.active_pane.current_working_dir
+
+  if cwd then
+    local path = cwd.file_path
+
+    -- Normalize Windows separators, remove trailing slash,
+    -- then take only the final directory component.
+    path = path:gsub('\\', '/'):gsub('/+$', '')
+    title = path:match('([^/]+)$') or path
+  end
+
+  return zoomed .. title
 end)
 
 wezterm.on('window-config-reloaded', function(window, pane)
@@ -81,12 +103,12 @@ config.mouse_bindings = {
   {
     event = { Down = { streak = 1, button = 'Right' } },
     mods = 'NONE',
-    action = act.PasteFrom 'PrimarySelection',
+    action = act.PasteFrom 'Clipboard',
   },
   {
     event = { Up = { streak = 1, button = 'Left' } },
     mods = 'NONE',
-    action = act.CompleteSelection 'ClipboardAndPrimarySelection',
+    action = act.CompleteSelection 'Clipboard',
   },
   {
     event = { Up = { streak = 1, button = 'Left' } },
@@ -120,6 +142,27 @@ config.launch_menu = {
   },
 }
 
+
+table.insert(config.launch_menu, {
+  label = 'MINGW64 XXXXXXXXX',
+  args = {
+    'C:\\msys64\\usr\\bin\\env.exe',
+    'MSYSTEM=MINGW64',
+    'CHERE_INVOKING=1',
+    'C:\\msys64\\usr\\bin\\bash.exe', '--login', '-i',
+  },
+})
+
+table.insert(config.launch_menu, {
+  label = 'UCRT64 XXXXXX',
+  args = {
+    'C:\\msys64\\usr\\bin\\env.exe',
+    'MSYSTEM=UCRT64',
+    'CHERE_INVOKING=1',
+    'C:\\msys64\\usr\\bin\\bash.exe', '--login', '-i',
+  },
+})
+
 -- Leader
 config.leader = {
   key = 'a',
@@ -127,7 +170,23 @@ config.leader = {
   timeout_milliseconds = 1000,
 }
 
+local test_text = string.rep('abcdefghij ', 50)
+
 config.keys = {
+  {
+    key = 'F11',
+    mods = 'NONE',
+    action = wezterm.action_callback(function(window, pane)
+      pane:send_text(test_text)
+    end),
+  },
+  {
+    key = 'F12',
+    mods = 'NONE',
+    action = wezterm.action_callback(function(window, pane)
+      pane:send_paste(test_text)
+    end),
+  },
   -- Ctrl-A Ctrl-A sends an actual Ctrl-A.
   {
     key = 'a',

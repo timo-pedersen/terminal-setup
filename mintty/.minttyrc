@@ -7,15 +7,19 @@ SessionGeomSync=2
 ZoomMouse=yes
 
 CtrlShiftShortcuts=yes
-KeyFunctions=d:`echo -n `date``;t:new-tab-cwd;n:new-window;
+KeyFunctions=d:`echo -n `date``;e:`explorer .`;t:new-tab-cwd;n:new-window;CA+Left:tab-left;CA+Right:tab-right;
 
-Background=C:\msys64\home\terminal_texture2.jpg
+# Background kills line cursor, not block cursor. 
+# Background=C:\msys64\home\terminal_texture2.jpg
 ThemeDark=xterm
 Transparency=low
 OpaqueWhenFocused=yes
 CursorType=line
-FontHeight=10
+CursorBlinks=1
+CursorColour=255,255,255
 Font=0xProto Nerd Font Mono
+FontHeight=10
+TabFont=0xProto Nerd Font Mono
 FontSmoothing=full
 Locale=en_US
 Language=en_US
@@ -26,4 +30,3 @@ PgUpDnScroll=no
 BellType=0
 StatusLine=no
 
-TabFont=0xProto Nerd Font Mono
